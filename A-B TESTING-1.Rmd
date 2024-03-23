@@ -1,0 +1,100 @@
+---
+title: "A/B TESTING"
+author: "LANGAT ERICK"
+date: "2023-10-28"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## A/B TESTING
+
+```{r}
+rm(list = ls())#clear working directory
+library(tidyverse)
+library(DataExplorer)
+```
+
+```{r}
+#Load data
+df <- read.csv("C:/Users/langa/OneDrive/Desktop/Dataset/AB TEST_Website Results.csv")
+head(df)
+plot_missing(df)
+```
+
+```{r}
+(tm <-df %>%  group_by(variant) %>% summarise(total_obs=n(),
+                                             total_converted=sum(converted=="TRUE"),
+                                              conversion_rate=total_converted/n())
+    )
+         
+```
+
+```{r}
+
+```
+
+```{r}
+names(df)
+#Lets filter conversion subset A
+
+conv_sub_A <- df %>% filter(variant=="A" & converted=="TRUE")
+
+#Total number of Conversion of variant A
+(conversion_A <- nrow(conv_sub_A))
+
+```
+
+```{r}
+#TOTAL NUMBER OF VISITORS A
+(visitors_A <- nrow(df %>% filter(variant=="A")))
+```
+
+```{r}
+#CONVERSION RATE A
+(conv_rate_A <- (conversion_A/visitors_A))
+```
+
+```{r}
+###SUBSET _B
+conv_subset_B <- df %>% filter(variant=="B" & converted=="TRUE")
+#TOTAL NO. OF CONVERSION OF VARIANT B
+(conversion_B <- nrow(conv_subset_B))
+
+```
+
+```{r}
+#TOTAL NO. OF VISITORS B
+(visitors_B <- nrow(df %>%  filter(variant=="B")))
+```
+
+```{r}
+#CONVERSION RATE B
+(conv_rate_B <- (conversion_B/visitors_B))
+```
+
+```{r}
+#Uplift
+
+(uplift <- ((conv_rate_B - conv_rate_A)/conv_rate_A)*100)
+```
+
+#B is Better is Than A by 83%
+
+```{r}
+#pooled probability of variants A & B
+
+a_b <- df %>%  filter(variant %in% c("A", "B") & converted== "TRUE")
+(total_a_b <- nrow(a_b))
+
+```
+
+```{r}
+(sum_a_b <- nrow(df %>%  filter(variant %in% c('A','B'))))
+```
+
+```{r}
+(pooled_a_b <- total_a_b/sum_a_b)
+```

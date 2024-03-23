@@ -1,0 +1,71 @@
+---
+title: "A_B TESTING@2"
+author: "LANGAT ERICK"
+date: "2023-10-28"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## A/B TESTING\@2
+
+```{r}
+rm(list = ls())#clear working directory
+library(tidyverse)
+```
+
+```{r}
+ABtest1 <- read.csv('C:/Users/langa/OneDrive/Desktop/Dataset/ab_data.csv')
+head(ABtest1)
+ABtest <-  ABtest1 %>%  select(group, landing_page, converted)
+head(ABtest)
+```
+
+```{r}
+#
+library(DataExplorer)
+plot_missing(ABtest)
+```
+
+```{r}
+#lets filter #Control group
+control_1 <- ABtest %>% filter(group=="control" & converted==1)
+(no_control_1 <- nrow(control_1))
+```
+
+```{r}
+#Total number of control groups
+
+(sum_control_group <- nrow(ABtest %>% filter(group=="control")))
+```
+
+```{r}
+#control rate 
+(control_rate <- no_control_1/sum_control_group)
+```
+
+```{r}
+#treatment groups
+
+treatmet_group <- ABtest %>% filter(group=="treatment" & converted==1)
+(no_treatment_group <- nrow(treatmet_group))
+```
+
+```{r}
+#sum of treatment 
+
+(sum_treatment <- nrow(ABtest %>%  filter(group=="treatment")))
+```
+
+```{r}
+#treatment rate
+(treatment_rate <- no_treatment_group/sum_treatment)
+```
+
+```{r}
+#uplift
+
+(uplift <- ((control_rate-treatment_rate)/ treatment_rate)*100)
+```
